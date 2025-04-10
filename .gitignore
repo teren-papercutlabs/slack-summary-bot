@@ -18,6 +18,7 @@ build/
 .vscode/
 *.swp
 *.swo
+.cursor/
 
 # Logs
 logs/

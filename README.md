@@ -8,6 +8,7 @@ A Slack bot that uses OpenAI's API to provide summaries and insights from conver
 - Integration with OpenAI API
 - Configurable summary parameters
 - Secure handling of API keys and tokens
+- Webhook endpoint for Slack events
 
 ## Prerequisites
 
@@ -15,6 +16,26 @@ A Slack bot that uses OpenAI's API to provide summaries and insights from conver
 - npm
 - Slack Workspace Admin access
 - OpenAI API key
+
+## Slack App Configuration
+
+1. Create a new Slack App at https://api.slack.com/apps
+2. Under "Basic Information":
+   - Get your "Signing Secret" for `SLACK_SIGNING_SECRET`
+   - Generate an "App-Level Token" with `connections:write` scope for `SLACK_APP_TOKEN`
+3. Under "OAuth & Permissions":
+   - Add the following bot token scopes:
+     - `app_mentions:read`
+     - `chat:write`
+     - `channels:history`
+   - Install the app to your workspace
+   - Get your "Bot User OAuth Token" for `SLACK_BOT_TOKEN`
+4. Under "Event Subscriptions":
+   - Enable events
+   - Subscribe to the `app_mention` bot event
+   - Once your app is running, set the request URL to `https://your-domain/slack/events`
+5. Under "Socket Mode":
+   - Enable Socket Mode (this allows the bot to work without a public URL during development)
 
 ## Setup
 
@@ -72,6 +93,23 @@ npm run dev
 ├── tests/             # Test files
 └── package.json       # Project metadata and dependencies
 ```
+
+## Webhook Endpoint
+
+The bot provides a webhook endpoint at `/slack/events` that handles:
+
+- URL verification challenges from Slack
+- App mention events
+- Other Slack events (configurable)
+
+The endpoint is automatically set up when you start the server. In development, the bot uses Socket Mode, so you don't need to expose this endpoint publicly.
+
+For production deployment:
+
+1. Deploy the bot to your server
+2. Set up HTTPS (required by Slack)
+3. Update your Slack App's Event Subscriptions URL to `https://your-domain/slack/events`
+4. Disable Socket Mode if you want to use the HTTP endpoint instead
 
 ## Contributing
 

@@ -1,0 +1,76 @@
+{
+  "project": {
+    "id": "78fb5ae6-7c01-4f6e-b620-39de6f1a9361",
+    "name": "Slack summary bot",
+    "team_id": "454c9eaa-1a75-4433-bad6-b32b7af67d4a"
+  },
+  "ticket_defaults": {
+    "labelIds": ["f0e7a973-5344-43fa-8725-7feb4b9cefa0"],
+    "status": "2bdc8e5b-454f-437e-88f3-c21571f5f5c5"
+  },
+  "metadata": {
+    "workflow_states": [
+      {
+        "id": "606b7ef9-710d-456a-8e74-e185adcb623e",
+        "name": "In Review",
+        "type": "started"
+      },
+      {
+        "id": "fddefee4-0f4d-4e51-befd-d56f6af55bd5",
+        "name": "Canceled",
+        "type": "canceled"
+      },
+      {
+        "id": "8129803d-5d72-4952-875d-0ac9ecd48442",
+        "name": "Duplicate",
+        "type": "canceled"
+      },
+      {
+        "id": "80fd9370-fe3c-4247-9826-f96ba88548d8",
+        "name": "Backlog",
+        "type": "backlog"
+      },
+      {
+        "id": "72c4bf52-40b2-4c20-93c1-a01c0aaf563b",
+        "name": "Done",
+        "type": "completed"
+      },
+      {
+        "id": "2bdc8e5b-454f-437e-88f3-c21571f5f5c5",
+        "name": "Todo",
+        "type": "unstarted"
+      },
+      {
+        "id": "17ceafd3-5004-4ea4-8daa-5e4c1f4ecc35",
+        "name": "In Progress",
+        "type": "started"
+      }
+    ],
+    "labels": [
+      {
+        "id": "f0e7a973-5344-43fa-8725-7feb4b9cefa0",
+        "name": "Cursor-generated"
+      },
+      {
+        "id": "257792b7-f9cc-491e-9abe-da2ab7186468",
+        "name": "Dev Experience"
+      },
+      {
+        "id": "76f942a5-e49e-4c8a-9241-d88b85799df7",
+        "name": "Refactoring"
+      },
+      {
+        "id": "eb095185-b8e8-4654-aab2-08cedbae5a21",
+        "name": "Improvement"
+      },
+      {
+        "id": "ab1d9179-8f25-43ae-8b6d-dcbe5db4789b",
+        "name": "Feature"
+      },
+      {
+        "id": "5913885c-3a39-46c4-9741-f213e83119e1",
+        "name": "Bug"
+      }
+    ]
+  }
+}
