@@ -67,19 +67,15 @@ export class SlackEventsController {
               urlInfo.url
             );
 
-            // Generate summary using OpenAI
-            const summary = await this.openaiService.generateSummary(content);
+            // Generate response using OpenAI
+            const response = await this.openaiService.generateResponse(content);
 
-            // Format the summary for Slack
-            const formattedSummary = this.formatSummaryForSlack(
-              summary,
-              urlInfo.url
-            );
-
-            // Post the summary
+            // Format and post the response
+            const title = `*<${urlInfo.url}|Article Summary>*\n\n`;
             await say({
-              text: formattedSummary,
+              text: title + response,
               thread_ts: mentionEvent.thread_ts || mentionEvent.ts,
+              reply_broadcast: true,
             });
           } catch (error) {
             let errorMessage =
@@ -140,30 +136,5 @@ export class SlackEventsController {
         });
       }
     });
-  }
-
-  /**
-   * Formats the summary for Slack message
-   */
-  private formatSummaryForSlack(
-    summary: {
-      summary: string;
-      interestingPoints: Array<{ point: string; sourceSection: string }>;
-    },
-    url: string
-  ): string {
-    const lines = [
-      `*Article Summary* (<${url}|Original Article>)\n`,
-      summary.summary,
-      "\n*Key Points:*",
-    ];
-
-    summary.interestingPoints.forEach((point, index) => {
-      lines.push(
-        `${index + 1}. ${point.point}\n   _Source: ${point.sourceSection}_`
-      );
-    });
-
-    return lines.join("\n");
   }
 }
