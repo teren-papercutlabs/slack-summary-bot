@@ -5,8 +5,22 @@ import path from "path";
 // Helper to get caller location for VSCode links
 const getCallerLocation = () => {
   const error = new Error();
-  const stack = error.stack?.split("\n")[3];
-  const match = stack?.match(/\((.*):(\d+):(\d+)\)/);
+  const stackLines = error.stack?.split("\n") || [];
+
+  // Find the first line that's not from node_modules, winston, or our logger
+  const callerLine = stackLines.find((line) => {
+    return (
+      line.includes("at ") &&
+      !line.includes("node_modules") &&
+      !line.includes("/winston/") &&
+      !line.includes("/utils/logger.ts")
+    );
+  });
+
+  const match =
+    callerLine?.match(/at.*\((.*):(\d+):(\d+)\)/) ||
+    callerLine?.match(/at\s+(.*):(\d+):(\d+)/);
+
   return match
     ? {
         file: path.relative(process.cwd(), match[1]),
@@ -34,7 +48,26 @@ const truncateArrays = (obj: any, maxLength = 10): any => {
 // Format for colorized JSON output
 const colorizedJson = winston.format((info) => {
   const { message, ...metadata } = info;
-  const stringified = JSON.stringify(truncateArrays(metadata), null, 2);
+
+  // Pre-process stack traces to preserve newlines
+  const processedMetadata = Object.fromEntries(
+    Object.entries(metadata).map(([key, value]) => {
+      if (key === "stack" && typeof value === "string") {
+        // Split the stack trace by newlines and indent each line
+        const formattedStack = value
+          .split("\n")
+          .map((line, i) => (i === 0 ? line : `      ${line.trim()}`))
+          .join("\n");
+        return [key, formattedStack];
+      }
+      return [key, value];
+    })
+  );
+
+  const stringified = JSON.stringify(truncateArrays(processedMetadata), null, 2)
+    // Preserve actual newlines in stack traces
+    .replace(/\\n/g, "\n");
+
   info.formattedMetadata = stringified.replace(
     /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g,
     (match) => {
@@ -63,15 +96,32 @@ const logger = winston.createLogger({
     new winston.transports.Console({
       format: winston.format.combine(
         winston.format.timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
+        colorizedJson,
         winston.format.printf((info) => {
           const { timestamp, level, message, formattedMetadata } = info;
           const location = getCallerLocation();
           const locationStr = `[${location.file}:${location.line}:${location.column}]`;
-          return `${timestamp} ${level}: ${locationStr} ${message}${
-            formattedMetadata ? "\n" + formattedMetadata : ""
-          }`;
-        }),
-        colorizedJson
+
+          // Use the pre-colorized metadata from our colorizedJson formatter
+          const metadataStr =
+            formattedMetadata && formattedMetadata !== "{}"
+              ? `\n${formattedMetadata}`
+              : "";
+
+          // Add colors to the base log elements
+          const colorizedTimestamp = chalk.gray(timestamp);
+          const colorizedLevel =
+            level === "error"
+              ? chalk.red(level)
+              : level === "warn"
+              ? chalk.yellow(level)
+              : level === "info"
+              ? chalk.blue(level)
+              : chalk.gray(level);
+          const colorizedLocation = chalk.gray(locationStr);
+
+          return `${colorizedTimestamp} ${colorizedLevel}: ${colorizedLocation} ${message}${metadataStr}`;
+        })
       ),
     }),
   ],

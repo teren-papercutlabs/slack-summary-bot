@@ -39,7 +39,6 @@ slackApp
   .then((port) => {
     Logger.info({
       message: "Slack app is running",
-      port,
       functionName: "slackApp.start",
     });
   })

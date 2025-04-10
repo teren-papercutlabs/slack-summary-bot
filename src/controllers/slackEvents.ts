@@ -1,11 +1,21 @@
-import { App, AnyMiddlewareArgs, SlackEventMiddlewareArgs } from "@slack/bolt";
+import { App } from "@slack/bolt";
 import { Logger } from "../utils/logger";
 import { SlackAppMentionEvent } from "../types/slack";
 import { MessageParserService } from "../services/messageParser";
 import { MessageParseError } from "../types/messageParser";
+import { OpenAIService } from "../services/openai";
+import {
+  ArticleFetcherService,
+  ArticleFetchError,
+} from "../services/articleFetcher";
 
 export class SlackEventsController {
+  private openaiService: OpenAIService;
+  private articleFetcher: ArticleFetcherService;
+
   constructor(private app: App) {
+    this.openaiService = OpenAIService.getInstance();
+    this.articleFetcher = ArticleFetcherService.getInstance();
     this.initializeEventListeners();
   }
 
@@ -49,16 +59,55 @@ export class SlackEventsController {
           functionName: "SlackEventsController.handleAppMention",
         });
 
-        // TODO: Pass the parsed message to the article fetching and summarization service
-        // This will be implemented in a separate ticket
+        // Process each URL (though we currently only support one)
+        for (const urlInfo of parsedMessage.urls) {
+          try {
+            // Fetch article content
+            const content = await this.articleFetcher.fetchArticleContent(
+              urlInfo.url
+            );
 
-        // Temporary response until summarization is implemented
-        const urlList = parsedMessage.urls.map((u) => `• ${u.url}`).join("\n");
+            // Generate summary using OpenAI
+            const summary = await this.openaiService.generateSummary(content);
 
-        await say({
-          text: `I found the following URLs in your message:\n${urlList}\n\nI'll be able to summarize these articles once the summarization feature is implemented!`,
-          thread_ts: mentionEvent.thread_ts || mentionEvent.ts,
-        });
+            // Format the summary for Slack
+            const formattedSummary = this.formatSummaryForSlack(
+              summary,
+              urlInfo.url
+            );
+
+            // Post the summary
+            await say({
+              text: formattedSummary,
+              thread_ts: mentionEvent.thread_ts || mentionEvent.ts,
+            });
+          } catch (error) {
+            let errorMessage =
+              "I encountered an error while processing the article.";
+
+            if (error instanceof ArticleFetchError) {
+              switch (error.code) {
+                case "PAYWALL_DETECTED":
+                  errorMessage =
+                    "Sorry, but this article appears to be behind a paywall. I can't access its content.";
+                  break;
+                case "FETCH_ERROR":
+                  errorMessage =
+                    "I couldn't fetch the article. Please make sure the URL is accessible.";
+                  break;
+                case "EMPTY_CONTENT":
+                  errorMessage =
+                    "I couldn't find any meaningful content in the article. The page might be empty or require JavaScript to load.";
+                  break;
+              }
+            }
+
+            await say({
+              text: errorMessage,
+              thread_ts: mentionEvent.thread_ts || mentionEvent.ts,
+            });
+          }
+        }
       } catch (error) {
         Logger.error({
           message: "Error processing app_mention event",
@@ -79,6 +128,9 @@ export class SlackEventsController {
           } else if ((error as MessageParseError).code === "INVALID_URL") {
             errorMessage =
               "I found a URL in your message, but it doesn't seem to be valid. Please check the URL and try again!";
+          } else if ((error as MessageParseError).code === "MULTIPLE_URLS") {
+            errorMessage =
+              "I found multiple URLs in your message. For now, I can only summarize one article at a time. Please send me one URL at a time!";
           }
         }
 
@@ -88,5 +140,30 @@ export class SlackEventsController {
         });
       }
     });
+  }
+
+  /**
+   * Formats the summary for Slack message
+   */
+  private formatSummaryForSlack(
+    summary: {
+      summary: string;
+      interestingPoints: Array<{ point: string; sourceSection: string }>;
+    },
+    url: string
+  ): string {
+    const lines = [
+      `*Article Summary* (<${url}|Original Article>)\n`,
+      summary.summary,
+      "\n*Key Points:*",
+    ];
+
+    summary.interestingPoints.forEach((point, index) => {
+      lines.push(
+        `${index + 1}. ${point.point}\n   _Source: ${point.sourceSection}_`
+      );
+    });
+
+    return lines.join("\n");
   }
 }
