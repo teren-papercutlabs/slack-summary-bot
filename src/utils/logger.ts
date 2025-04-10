@@ -67,7 +67,9 @@ const logger = winston.createLogger({
           const { timestamp, level, message, formattedMetadata } = info;
           const location = getCallerLocation();
           const locationStr = `[${location.file}:${location.line}:${location.column}]`;
-          return `${timestamp} ${level}: ${locationStr} ${message}\n${formattedMetadata}`;
+          return `${timestamp} ${level}: ${locationStr} ${message}${
+            formattedMetadata ? "\n" + formattedMetadata : ""
+          }`;
         }),
         colorizedJson
       ),

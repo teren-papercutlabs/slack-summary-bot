@@ -1,10 +1,10 @@
+// Load environment variables first
 import dotenv from "dotenv";
+dotenv.config();
+
 import { Logger } from "./utils/logger";
 import { slackApp } from "./config/slack";
 import { SlackEventsController } from "./controllers/slackEvents";
-
-// Load environment variables
-dotenv.config();
 
 async function startApp() {
   try {

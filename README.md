@@ -1,12 +1,12 @@
 # Slack Summary Bot
 
-A Slack bot that uses OpenAI's API to provide summaries and insights from conversations.
+A Slack bot that provides summaries of web content when mentioned with a URL.
 
 ## Features
 
-- Summarize channel conversations
-- Integration with OpenAI API
-- Configurable summary parameters
+- Summarize web content from URLs shared in channels
+- Integration with OpenAI API for intelligent summarization
+- Simple mention-based interaction (@bot <url>)
 - Secure handling of API keys and tokens
 - Webhook endpoint for Slack events
 
@@ -25,9 +25,8 @@ A Slack bot that uses OpenAI's API to provide summaries and insights from conver
    - Generate an "App-Level Token" with `connections:write` scope for `SLACK_APP_TOKEN`
 3. Under "OAuth & Permissions":
    - Add the following bot token scopes:
-     - `app_mentions:read`
-     - `chat:write`
-     - `channels:history`
+     - `app_mentions:read` (to receive mentions)
+     - `chat:write` (to respond with summaries)
    - Install the app to your workspace
    - Get your "Bot User OAuth Token" for `SLACK_BOT_TOKEN`
 4. Under "Event Subscriptions":
@@ -36,6 +35,16 @@ A Slack bot that uses OpenAI's API to provide summaries and insights from conver
    - Once your app is running, set the request URL to `https://your-domain/slack/events`
 5. Under "Socket Mode":
    - Enable Socket Mode (this allows the bot to work without a public URL during development)
+
+## Usage
+
+Mention the bot with a URL to get a summary:
+
+```
+@summary-bot https://example.com/article
+```
+
+The bot will respond with a concise summary of the web content.
 
 ## Setup
 

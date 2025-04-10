@@ -1,8 +1,8 @@
 {
   "project": {
-    "id": "78fb5ae6-7c01-4f6e-b620-39de6f1a9361",
+    "projectId": "78fb5ae6-7c01-4f6e-b620-39de6f1a9361",
     "name": "Slack summary bot",
-    "team_id": "454c9eaa-1a75-4433-bad6-b32b7af67d4a"
+    "teamId": "454c9eaa-1a75-4433-bad6-b32b7af67d4a"
   },
   "ticket_defaults": {
     "labelIds": ["f0e7a973-5344-43fa-8725-7feb4b9cefa0"],

@@ -2,11 +2,7 @@ import { App } from "@slack/bolt";
 import { Logger } from "../utils/logger";
 
 // Validate required environment variables
-const requiredEnvVars = [
-  "SLACK_BOT_TOKEN",
-  "SLACK_SIGNING_SECRET",
-  "SLACK_APP_TOKEN",
-] as const;
+const requiredEnvVars = ["SLACK_BOT_TOKEN", "SLACK_SIGNING_SECRET"] as const;
 
 for (const envVar of requiredEnvVars) {
   if (!process.env[envVar]) {
@@ -23,8 +19,7 @@ for (const envVar of requiredEnvVars) {
 export const slackApp = new App({
   token: process.env.SLACK_BOT_TOKEN,
   signingSecret: process.env.SLACK_SIGNING_SECRET,
-  appToken: process.env.SLACK_APP_TOKEN,
-  socketMode: true,
+  port: Number(process.env.PORT) || 3000,
   customRoutes: [
     {
       path: "/slack/events",

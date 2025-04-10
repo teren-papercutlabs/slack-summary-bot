@@ -38,7 +38,7 @@ A Slack bot that automatically generates and posts summaries of shared articles 
 - In scope:
 
   - Slack bot implementation with channel monitoring
-  - Article URL processing and content extraction
+  - Single article URL processing and content extraction
   - LLM-based summary generation
   - Summary posting to Slack
   - Content length management and validation
@@ -46,7 +46,7 @@ A Slack bot that automatically generates and posts summaries of shared articles 
 
 - Out of scope:
 
-  - Multi-article summarization
+  - Multi-article summarization (only one URL per message will be processed)
   - Real-time article monitoring
   - Custom summarization preferences
   - Article content caching
