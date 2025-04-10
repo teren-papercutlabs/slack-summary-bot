@@ -90,9 +90,11 @@ export class OpenAIService {
    - Don't use [xx] style headers
    - Don't start points with "This article..."
    - Make the summary direct and concise
-2. Follow this example format:
+2. Follow this example format strictly:
 
 *Beyond the AI MVP: What it really takes*
+
+*Summary:* The article argues most AI companies are trapped in a deceptive MVP phase without proper testing infrastructure, as evidenced by inconsistent performance between model versions. It details how building reliable AI systems requires extensive tooling including eval suites, automated grading, and observability tools. Most organizations lack these essential tools despite their importance, creating a significant gap between prototype and production-ready AI. Companies that invest in understanding their systems and building robust measurement tools will ultimately succeed in AI development.
 
 *Key points*
 
@@ -109,7 +111,7 @@ ${content}`;
           {
             role: "system",
             content:
-              "You are a precise and insightful article summarizer. Create summaries in Slack markdown format, focusing on the most important information and interesting points. Always back up insights with specific references to the source material. Be direct and concise.",
+              "You are a precise and insightful article summarizer. Create summaries in Slack markdown format, focusing on the most important information and interesting points. Be direct and concise, but be sure to point out if anything is particularly significant.",
           },
           {
             role: "user",
