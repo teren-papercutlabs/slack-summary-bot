@@ -94,5 +94,16 @@ describe("MessageParserService", () => {
       expect(result.urls[0].contextBefore).toBe("");
       expect(result.urls[0].contextAfter).toBe("");
     });
+
+    it("should handle Slack's formatted URL syntax", () => {
+      const event = createMockEvent(
+        "<@U08MJLMBQ9K> <https://gigamind.dev/|https://gigamind.dev/>"
+      );
+      const result = MessageParserService.parseMessage(event);
+      expect(result.urls).toHaveLength(1);
+      expect(result.urls[0].url).toBe("https://gigamind.dev/");
+      expect(result.urls[0].contextBefore).toBe("");
+      expect(result.urls[0].contextAfter).toBe("");
+    });
   });
 });

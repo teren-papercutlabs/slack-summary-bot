@@ -8,9 +8,36 @@ import { SlackAppMentionEvent } from "../types/slack";
 
 export class MessageParserService {
   private static URL_REGEX =
-    /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/g;
+    /<(https?:\/\/[^|>]+)\|[^>]+>|https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/g;
   private static CONTEXT_CHARS = 100; // Number of characters to capture before and after URL
   private static BOT_MENTION_REGEX = /<@[A-Z0-9]+>\s*/;
+
+  /**
+   * Extracts the actual URL and its position information from a Slack formatted URL string
+   * @param match The URL match from the regex
+   * @param originalStartIndex The starting index of the match in the original text
+   * @returns Object containing the URL and its position information
+   */
+  private static extractUrlInfo(
+    match: string,
+    originalStartIndex: number
+  ): { url: string; startIndex: number; endIndex: number } {
+    // Check if this is a Slack formatted URL <URL|display>
+    const slackUrlMatch = match.match(/<(https?:\/\/[^|>]+)\|[^>]+>/);
+    if (slackUrlMatch) {
+      return {
+        url: slackUrlMatch[1],
+        startIndex: originalStartIndex,
+        endIndex: originalStartIndex + match.length,
+      };
+    }
+    // Regular URL
+    return {
+      url: match,
+      startIndex: originalStartIndex,
+      endIndex: originalStartIndex + match.length,
+    };
+  }
 
   /**
    * Extracts URLs and context from a Slack message
@@ -59,41 +86,39 @@ export class MessageParserService {
       // Process each URL match
       const urls: ParsedUrl[] = [];
       for (const match of urlMatches) {
-        const url = match[0];
-        const startIndex = match.index!;
-        const endIndex = startIndex + url.length;
+        const urlInfo = this.extractUrlInfo(match[0], match.index!);
 
         try {
           // Validate URL
-          new URL(url);
+          new URL(urlInfo.url);
 
           // Get context before URL
           const contextStartIndex = Math.max(
             0,
-            startIndex - this.CONTEXT_CHARS
+            urlInfo.startIndex - this.CONTEXT_CHARS
           );
           const contextBefore = cleanText
-            .slice(contextStartIndex, startIndex)
+            .slice(contextStartIndex, urlInfo.startIndex)
             .trim();
 
           // Get context after URL
           const contextEndIndex = Math.min(
             cleanText.length,
-            endIndex + this.CONTEXT_CHARS
+            urlInfo.endIndex + this.CONTEXT_CHARS
           );
           const contextAfter = cleanText
-            .slice(endIndex, contextEndIndex)
+            .slice(urlInfo.endIndex, contextEndIndex)
             .trim();
 
           urls.push({
-            url,
+            url: urlInfo.url,
             contextBefore,
             contextAfter,
           });
 
           Logger.debug({
             message: "Extracted URL with context",
-            url,
+            url: urlInfo.url,
             contextBefore,
             contextAfter,
             functionName: "MessageParserService.parseMessage",
@@ -101,7 +126,7 @@ export class MessageParserService {
         } catch (error) {
           Logger.warn({
             message: "Invalid URL found",
-            url,
+            url: urlInfo.url,
             error: error instanceof Error ? error.message : "Unknown error",
             functionName: "MessageParserService.parseMessage",
           });
@@ -110,7 +135,7 @@ export class MessageParserService {
             "Invalid URL detected"
           ) as MessageParseError;
           parseError.code = "INVALID_URL";
-          parseError.details = { url };
+          parseError.details = { url: urlInfo.url };
           throw parseError;
         }
       }
