@@ -84,6 +84,9 @@ export class OpenAIService {
 
       const prompt = `Analyze this article and provide a summary in Slack markdown format:
 
+      IMPORTANT: DO NOT include an "Article Summary" title at the top. Start DIRECTLY with the article title as a link.
+
+
 1. Format rules:
    - Use Slack markdown (*bold*, _italic_)
    - The title of the article should also be a link to the article. There should not be a separate link "Article Summary" title at the top of the message.
@@ -108,6 +111,10 @@ export class OpenAIService {
 
 To effective apply these insights, founders and developers should prioritize building robust evaluation and observability tools tailored to their specific AI use cases. This includes developing comprehensive test suites with diverse scenarios, implementing automated grading systems for AI interactions, and establishing observability mechanisms to monitor and understand AI behavior in real-time. By investing in these foundational tools, teams can move beyond the deceptive allure of quick MVPs and ensure their AI products perform reliably in production environments. This proactive approach enables smaller teams to iterate rapidly, learn from real-world feedback, and maintain a competitive edge over larger organizations that may struggle with bureaucratic hurdles and slower adaptation. ​
 
+4. DO NOT format like this incorrect example:
+**Article Summary**
+*Title*
+
 Article content:
 ${content}`;
 
@@ -117,14 +124,14 @@ ${content}`;
           {
             role: "system",
             content:
-              "You are a precise and insightful article summarizer. Create summaries in Slack markdown format, focusing on the most important information and interesting points. Be direct and concise, but be sure to point out if anything is particularly significant.",
+              "You are an article summarizer that follows formatting instructions precisely. Never add any headers or titles that aren't explicitly requested in the user's instructions. Use exactly the format shown in examples without deviation.",
           },
           {
             role: "user",
             content: prompt,
           },
         ],
-        temperature: 0.7,
+        temperature: 0.3,
         max_tokens: 1500,
       });
 
