@@ -125,9 +125,12 @@ export class OpenAIService {
 
 *Summary:* This article describes how a team migrated from Enzyme to RTL. They used LLMs and finished it faster than expected.
 
-*Key points*
+*Key Points*
+
 1. *They used LLMs.* The team used LLMs to help with the migration.
+
 2. *It was faster than manual work.* It saved time and effort.
+
 3. *They structured the process.* The team followed a structured approach.
 
 *Practical application:* Consider using LLMs in your dev work. It might help you move faster.
@@ -146,9 +149,13 @@ export class OpenAIService {
 *Summary:* Airbnb used LLMs to automate 97% of a 3.5K-file test migration from Enzyme to React Testing Library, compressing 1.5 years of manual work into 6 weeks. By designing a modular, retryable pipeline and progressively expanding prompt context, they preserved test intent and code coverage while scaling migration throughput.
 
 *Key points*
+
 1. *Modular pipeline via state machine.* Files flowed through discrete validation/refactor steps modeled as a state machine, enabling parallelism and controlled error handling. This structure allowed granular visibility into failures and the ability to retry only the failing step, without reprocessing the entire file.
+
 2. *Aggressive retries with dynamic prompts.* Failed steps triggered automated retries, with each attempt incorporating updated error context and prior file diffs. Many files succeeded within 10 attempts, using what was essentially a brute-force strategy that still saved massive amounts of developer time.
+
 3. *Scaling context to 100K tokens for tricky files.* For tests with custom setups or cross-file dependencies, prompts were expanded to include related test files, domain-specific migration rules, and working examples. This helped the LLM infer architectural patterns and avoid breaking intended test behavior.
+
 4. Iterative tuning loop: sample, tune, sweep. Airbnb analyzed a sample of failed migrations to identify common error patterns (“sample”), adjusted prompts and scripts to address those issues (“tune”), and then reprocessed the full set with the improvements (“sweep”). This loop helped raise the automation success rate from 75% to 97%, systematically knocking out edge cases and long-tail failures.
 
 *Practical application:* If you're migrating 100+ test files, a retryable step-based pipeline is worth replicating — even without LLMs. For smaller teams, start with 2–3 validation steps and basic retries using OpenAI functions or bash scripts. Skip the 100K token prompts unless you're seeing complex failure modes; instead, focus on tight few-shot examples and codebase-specific heuristics. Don’t over-engineer — aim for fast feedback loops and rerunability.
