@@ -92,7 +92,7 @@ export class OpenAIService {
    - Don't start points with "This article..."
    - Make the summary direct and concise
 2. Include a 'practical application' paragraph/section at the end that with suggestions as to how to practically apply the insights of the article. The audience is a small group of developers interested in building AI products, and using AI in the development process.
-3. Follow this example format strictly:
+3. FOLLOW THIS EXACT FORMAT - NO DEVIATIONS::
 
 <https://blog.lawrencejones.dev/ai-mvp|*Beyond the AI MVP: What it really takes*>
 
