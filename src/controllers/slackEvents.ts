@@ -71,9 +71,9 @@ export class SlackEventsController {
             const response = await this.openaiService.generateResponse(content);
 
             // Format and post the response
-            const title = `*<${urlInfo.url}|Article Summary>*\n\n`;
+
             await say({
-              text: title + response,
+              text: response,
               thread_ts: mentionEvent.thread_ts || mentionEvent.ts,
               reply_broadcast: true,
             });
