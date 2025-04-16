@@ -74,7 +74,7 @@ export class OpenAIService {
    * @param content The article content to analyze
    * @returns The formatted response text
    */
-  public async generateResponse(content: string): Promise<string> {
+  public async generateResponse(content: string, url: string): Promise<string> {
     try {
       Logger.info({
         message: "Generating GPT response",
@@ -92,32 +92,40 @@ export class OpenAIService {
    - Don’t start points with “This article…”
 
 2. Summary guidelines:
-   - Audience: Technical readers (engineers and developers, including those building AI tooling/products)
-   - Prioritize concrete technical insights, implementation details, and any interesting engineering design decisions
-   - Avoid overly broad or generic summaries—look for specific workflows, architecture choices, or quantitative outcomes that would matter to engineers
-   - Include stats, percentages, success rates, or scoped metrics where relevant
-   - Surface interesting uses of LLMs (e.g. how context is used, retry logic, pipeline structure)
-   - Be concise but not shallow—focus on signal
+   - Audience: Technical readers in a small dev team building AI products, with experience ranging from junior developers to CTOs
+   - Prioritize *specific technical insights*—workflow patterns, automation strategies, prompt engineering techniques, architectural tradeoffs
+   - Avoid generic language—highlight implementation details or concrete decisions that devs could learn from or adapt
+   - Be accessible: briefly explain any concept (e.g. “state machine,” “dynamic prompting”) that a junior developer might not be familiar with
+   - Include relevant metrics (e.g. success rates, token sizes, time reductions)
+   - Highlight notable uses of LLMs—how prompts were structured, how context was assembled, what made the system robust or scalable
+   - Be concise but not shallow—prioritize signal over summary
 
-3. End with a *Practical application:* section tailored for a small dev team using AI in their development workflow. Highlight actionable insights, implementation ideas, or principles they could adopt.
+3. End with a *Practical application:* section:
+   - Frame insights as actionable ideas for a small dev team using LLMs or AI tools in their codebase
+   - If parts of the article would be overkill for a small team, say so
+   - Feel free to add implementation suggestions (e.g. what tools or workflows might help replicate the approach)
 
 4. FOLLOW THIS EXACT FORMAT – NO DEVIATIONS:
 
 <{article url}|*{article title}*>
 
-*Summary:* {2–3 sentence summary with technical angle—e.g. what was done, why it was notable, and what technical choices made it work}
+*Summary:* {2–3 sentence summary with a technical angle—what was done, what made it work, and why it mattered}
 
 *Key points*
 
-1. *{First technical insight}* {Description}
-2. *{Second technical insight}* {Description}
-3. *{Third technical insight}* {Description}
+1. *{First technical insight}.* {Description on the same line—make it detailed but readable}
+2. *{Second technical insight}.* {Description on the same line}
+3. *{Third technical insight}.* {Description on the same line}
 ...
 
-*Practical application:* {Tailored advice or ideas based on the article's engineering strategies}
+*Practical application:* {Tailored advice or ideas for the stated audience. Be critical and helpful. Recommend useful patterns and tools. Call out fluff if needed.}
 
 Article content:
-${content}`;
+${content}
+
+Article URL (only to be used for the article title link):
+${url}
+`;
 
       const response = await this.client.chat.completions.create({
         model: "gpt-4o", // 4o is intended, do not fix this
@@ -125,7 +133,7 @@ ${content}`;
           {
             role: "system",
             content:
-              "You are a precise and insightful article summarizer. Create summaries in Slack markdown format, focusing on the most important information and interesting points. Be direct and concise, but be sure to point out if anything is particularly significant.",
+              "You are a precise, insightful, and experienced software developer summarizing a technical article for a small dev team building AI products. Your audience includes junior developers and CTOs. Your job is to distill high-signal insights, focusing on implementation details, clever techniques, and patterns worth learning from. Be concise, but don’t shy away from nuance. Use Slack markdown. Point out where the article is especially helpful—or where it overreaches.",
           },
           {
             role: "user",
