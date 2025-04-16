@@ -87,26 +87,34 @@ export class OpenAIService {
 1. Format rules:
    - Use Slack markdown (*bold*, _italic_)
    - The title of the article should also be a link to the article. There should not be a separate link "Article Summary" title at the top of the summary.
-   - Only use bold for the title of the article and the "title" of the insights
-   - Don't use [xx] style headers
-   - Don't start points with "This article..."
-   - Make the summary direct and concise
-2. Include a 'practical application' paragraph/section at the end that with suggestions as to how to practically apply the insights of the article. The audience is a small group of developers interested in building AI products, and using AI in the development process.
-3. FOLLOW THIS EXACT FORMAT - NO DEVIATIONS::
+   - Only use *bold* for the article title and for the key point headings (e.g. *Key points* and each numbered bullet title)
+   - Don’t use [xx] style headers
+   - Don’t start points with “This article…”
 
-<https://blog.lawrencejones.dev/ai-mvp|*Beyond the AI MVP: What it really takes*>
+2. Summary guidelines:
+   - Audience: Technical readers (engineers and developers, including those building AI tooling/products)
+   - Prioritize concrete technical insights, implementation details, and any interesting engineering design decisions
+   - Avoid overly broad or generic summaries—look for specific workflows, architecture choices, or quantitative outcomes that would matter to engineers
+   - Include stats, percentages, success rates, or scoped metrics where relevant
+   - Surface interesting uses of LLMs (e.g. how context is used, retry logic, pipeline structure)
+   - Be concise but not shallow—focus on signal
 
-*Summary:* The article argues most AI companies are trapped in a deceptive MVP phase without proper testing infrastructure, as evidenced by inconsistent performance between model versions. It details how building reliable AI systems requires extensive tooling including eval suites, automated grading, and observability tools. Most organizations lack these essential tools despite their importance, creating a significant gap between prototype and production-ready AI. Companies that invest in understanding their systems and building robust measurement tools will ultimately succeed in AI development.
+3. End with a *Practical application:* section tailored for a small dev team using AI in their development workflow. Highlight actionable insights, implementation ideas, or principles they could adopt.
+
+4. FOLLOW THIS EXACT FORMAT – NO DEVIATIONS:
+
+<{article url}|*{article title}*>
+
+*Summary:* {2–3 sentence summary with technical angle—e.g. what was done, why it was notable, and what technical choices made it work}
 
 *Key points*
 
-1. *The AI MVP Trap:* Initial AI prototypes may look promising but often fail in real-world applications due to a lack of robust testing and evaluation infrastructure. Many companies remain in this deceptive MVP stage, unable to progress to more reliable systems.
-2. *Building Essential Tools:* Creating a reliable AI system requires extensive tooling, including comprehensive test suites, automated grading, and observability tools. The difficulty lies not in writing tests but in integrating these tools into the development lifecycle, which most companies have yet to achieve.
-3. *Industry Maturity:* The AI industry is still immature, with few established practices or examples to guide development. Success depends on companies investing in understanding and improving their systems rather than relying on superficial strategies or the latest models.
+1. *{First technical insight}* {Description}
+2. *{Second technical insight}* {Description}
+3. *{Third technical insight}* {Description}
+...
 
-*Practical application:*
-
-To effective apply these insights, founders and developers should prioritize building robust evaluation and observability tools tailored to their specific AI use cases. This includes developing comprehensive test suites with diverse scenarios, implementing automated grading systems for AI interactions, and establishing observability mechanisms to monitor and understand AI behavior in real-time. By investing in these foundational tools, teams can move beyond the deceptive allure of quick MVPs and ensure their AI products perform reliably in production environments. This proactive approach enables smaller teams to iterate rapidly, learn from real-world feedback, and maintain a competitive edge over larger organizations that may struggle with bureaucratic hurdles and slower adaptation. ​
+*Practical application:* {Tailored advice or ideas based on the article's engineering strategies}
 
 Article content:
 ${content}`;
