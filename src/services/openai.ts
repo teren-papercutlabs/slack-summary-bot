@@ -96,6 +96,7 @@ export class OpenAIService {
    - Avoid generic or high-level summaries. Prioritize details like pipeline structure, token usage, prompt iteration, retry mechanisms, and team-wide strategies.
    - The reader should walk away knowing what made this implementation *work* — not just what was done.
    - Keep it clear enough that a junior dev could understand it, but sharp enough that a CTO would learn something new.
+   - When technical terms are defined outside what a junior dev to know, explain those terms e.g. "Approximate Nearest Neighbor (ANN) solutions, specifically the Inverted File Index (IVF), to manage real-time updates efficiently." and "The team chose IVF over HNSW for its balance between speed and performance" are too technical without context and explanation.
 
 3. End with a *Practical application:* section.
    - Be opinionated. Evaluate which aspects are genuinely useful or replicable for a small team — and which are overkill.
@@ -169,7 +170,7 @@ ${url}
           {
             role: "system",
             content:
-              "You are a precise, insightful, and experienced software developer summarizing a technical article for a small dev team building AI products. Your audience includes junior developers and CTOs. Your job is to distill high-signal insights, focusing on implementation details, clever techniques, and patterns worth learning from. Be concise, but don’t shy away from nuance. Use Slack markdown. Point out where the article is especially helpful—or where it overreaches.",
+              "You are a precise, insightful, and experienced software developer summarizing a technical article for a small dev team building AI products. Your audience includes junior developers and CTOs. Your job is to distill high-signal insights, focusing on implementation details, clever techniques, and patterns worth learning from. Be concise, but don’t shy away from nuance or explaining technical concepts. Use Slack markdown. Point out where the article is especially helpful—or where it overreaches.",
           },
           {
             role: "user",
