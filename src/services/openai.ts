@@ -100,10 +100,14 @@ export class OpenAIService {
    - Highlight notable uses of LLMs—how prompts were structured, how context was assembled, what made the system robust or scalable
    - Be concise but not shallow—prioritize signal over summary
 
-3. End with a *Practical application:* section:
-   - Frame insights as actionable ideas for a small dev team using LLMs or AI tools in their codebase
-   - If parts of the article would be overkill for a small team, say so
-   - Feel free to add implementation suggestions (e.g. what tools or workflows might help replicate the approach)
+3. End with a *Practical application:* section tailored for a small dev team using AI in their development workflow.
+   - Focus on *engineering tradeoffs*, not just abstract ideas.
+   - Identify what *is and isn’t worth replicating* for smaller teams, and *why*.
+   - Suggest *concrete patterns, tools, or simplifications* that map the article’s ideas to lower-scale environments.
+   - If a technique is likely overkill for a small team, explain *why*, and propose a more lightweight alternative.
+   - Don’t repeat well-known tools like “use GPT-4”; instead, show *how* or *when* to apply them.
+   - Be opinionated—clarify what actually matters if you're moving fast with limited resources.
+
 
 4. FOLLOW THIS EXACT FORMAT – NO DEVIATIONS:
 
