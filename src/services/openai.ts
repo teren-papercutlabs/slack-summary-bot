@@ -86,43 +86,75 @@ export class OpenAIService {
 
 1. Format rules:
    - Use Slack markdown (*bold*, _italic_)
-   - The title of the article should also be a link to the article. There should not be a separate link "Article Summary" title at the top of the summary.
-   - Only use *bold* for the article title and for the key point headings (e.g. *Key points* and each numbered bullet title)
-   - Don’t use [xx] style headers
+   - The title of the article should also be a link to the article.
+   - Only use *bold* for the article title and key point headings (e.g. *Key points* and each numbered bullet title).
    - Don’t start points with “This article…”
 
 2. Summary guidelines:
-   - Audience: Technical readers in a small dev team building AI products, with experience ranging from junior developers to CTOs
-   - Prioritize *specific technical insights*—workflow patterns, automation strategies, prompt engineering techniques, architectural tradeoffs
-   - Avoid generic language—highlight implementation details or concrete decisions that devs could learn from or adapt
-   - Be accessible: briefly explain any concept (e.g. “state machine,” “dynamic prompting”) that a junior developer might not be familiar with
-   - Include relevant metrics (e.g. success rates, token sizes, time reductions)
-   - Highlight notable uses of LLMs—how prompts were structured, how context was assembled, what made the system robust or scalable
-   - Be concise but not shallow—prioritize signal over summary
+   - Audience: Technical readers at a small startup (engineers, AI leads, and CTOs) building AI-powered products or using AI in their dev workflows.
+   - Focus on specific engineering decisions, workflows, automation strategies, and quantitative outcomes.
+   - Avoid generic or high-level summaries. Prioritize details like pipeline structure, token usage, prompt iteration, retry mechanisms, and team-wide strategies.
+   - The reader should walk away knowing what made this implementation *work* — not just what was done.
+   - Keep it clear enough that a junior dev could understand it, but sharp enough that a CTO would learn something new.
 
-3. End with a *Practical application:* section tailored for a small dev team using AI in their development workflow.
-   - Focus on *engineering tradeoffs*, not just abstract ideas.
-   - Identify what *is and isn’t worth replicating* for smaller teams, and *why*.
-   - Suggest *concrete patterns, tools, or simplifications* that map the article’s ideas to lower-scale environments.
-   - If a technique is likely overkill for a small team, explain *why*, and propose a more lightweight alternative.
-   - Don’t repeat well-known tools like “use GPT-4”; instead, show *how* or *when* to apply them.
-   - Be opinionated—clarify what actually matters if you're moving fast with limited resources.
-
+3. End with a *Practical application:* section.
+   - Be opinionated. Evaluate which aspects are genuinely useful or replicable for a small team — and which are overkill.
+   - Suggest concrete adaptations for smaller teams with limited time and tooling.
+   - If something is clever, call it out. If it’s over-engineered, say so.
+   - Where possible, suggest a simpler or leaner implementation of the same core ideas.
 
 4. FOLLOW THIS EXACT FORMAT – NO DEVIATIONS:
 
 <{article url}|*{article title}*>
 
-*Summary:* {2–3 sentence summary with a technical angle—what was done, what made it work, and why it mattered}
+*Summary:* {2–3 sentence technical summary — what was done, what made it notable, and how it was achieved}
 
 *Key points*
+1. *{Titled point}.* {On the same line, include the detail. Focus on architecture, technical decisions, automation patterns, data used, or results.}
+2. *{Another insight}.* {Same style — concrete, concise, insightful.}
+3. ...
 
-1. *{First technical insight}.* {Description on the same line—make it detailed but readable}
-2. *{Second technical insight}.* {Description on the same line}
-3. *{Third technical insight}.* {Description on the same line}
-...
+*Practical application:* {Tailored, opinionated take. What would a small dev team actually do with this? What to borrow? What to skip?}
 
-*Practical application:* {Tailored advice or ideas for the stated audience. Be critical and helpful. Recommend useful patterns and tools. Call out fluff if needed.}
+---
+
+📉 Bad Example (Too Generic):
+
+<https://example.com|*Some Company Migrated Tests to RTL*>
+
+*Summary:* This article describes how a team migrated from Enzyme to RTL. They used LLMs and finished it faster than expected.
+
+*Key points*
+1. *They used LLMs.* The team used LLMs to help with the migration.
+2. *It was faster than manual work.* It saved time and effort.
+3. *They structured the process.* The team followed a structured approach.
+
+*Practical application:* Consider using LLMs in your dev work. It might help you move faster.
+
+👎 Why this is bad:
+- Vague summaries (“used LLMs” — how?)
+- No mention of pipeline structure, retries, token limits, success rates
+- Practical application is empty calories: no opinion, no adaptation advice
+
+---
+
+📈 Good Example (What You Should Aim For):
+
+<https://airbnb.io/test-migration|*Airbnb Migrated 3.5K Tests with LLMs in 6 Weeks*>
+
+*Summary:* Airbnb used LLMs to automate 97% of a 3.5K-file test migration from Enzyme to React Testing Library, compressing 1.5 years of manual work into 6 weeks. By designing a modular, retryable pipeline and progressively expanding prompt context, they preserved test intent and code coverage while scaling migration throughput.
+
+*Key points*
+1. *Modular pipeline via state machine.* Files flowed through discrete validation/refactor steps modeled as a state machine, enabling parallelism and controlled error handling. This structure allowed granular visibility into failures and the ability to retry only the failing step, without reprocessing the entire file.
+2. *Aggressive retries with dynamic prompts.* Failed steps triggered automated retries, with each attempt incorporating updated error context and prior file diffs. Many files succeeded within 10 attempts, using what was essentially a brute-force strategy that still saved massive amounts of developer time.
+3. *Scaling context to 100K tokens for tricky files.* For tests with custom setups or cross-file dependencies, prompts were expanded to include related test files, domain-specific migration rules, and working examples. This helped the LLM infer architectural patterns and avoid breaking intended test behavior.
+4. Iterative tuning loop: sample, tune, sweep. Airbnb analyzed a sample of failed migrations to identify common error patterns (“sample”), adjusted prompts and scripts to address those issues (“tune”), and then reprocessed the full set with the improvements (“sweep”). This loop helped raise the automation success rate from 75% to 97%, systematically knocking out edge cases and long-tail failures.
+
+*Practical application:* If you're migrating 100+ test files, a retryable step-based pipeline is worth replicating — even without LLMs. For smaller teams, start with 2–3 validation steps and basic retries using OpenAI functions or bash scripts. Skip the 100K token prompts unless you're seeing complex failure modes; instead, focus on tight few-shot examples and codebase-specific heuristics. Don’t over-engineer — aim for fast feedback loops and rerunability.
+
+---
+
+Use the structure and depth of the *Good Example* as your reference. Match the tone, format, and level of detail exactly.
 
 Article content:
 ${content}
