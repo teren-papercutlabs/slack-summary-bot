@@ -86,7 +86,7 @@ export class OpenAIService {
 
 1. Format rules:
    - Use Slack markdown (*bold*, _italic_)
-   - The title of the article should also be a link to the article. There should not be a separate link for the title.
+   - The title of the article should also be a link to the article. There should not be a separate link "Article Summary" title at the top of the message.
    - Only use bold for the title of the article and the "title" of the insights
    - Don't use [xx] style headers
    - Don't start points with "This article..."
@@ -94,7 +94,7 @@ export class OpenAIService {
 2. Include a 'practical application' paragraph/section at the end that with suggestions as to how to practically apply the insights of the article. The audience is a small group of developers interested in building AI products, and using AI in the development process.
 3. Follow this example format strictly:
 
-*Beyond the AI MVP: What it really takes*
+<https://blog.lawrencejones.dev/ai-mvp|*Beyond the AI MVP: What it really takes*>
 
 *Summary:* The article argues most AI companies are trapped in a deceptive MVP phase without proper testing infrastructure, as evidenced by inconsistent performance between model versions. It details how building reliable AI systems requires extensive tooling including eval suites, automated grading, and observability tools. Most organizations lack these essential tools despite their importance, creating a significant gap between prototype and production-ready AI. Companies that invest in understanding their systems and building robust measurement tools will ultimately succeed in AI development.
 
