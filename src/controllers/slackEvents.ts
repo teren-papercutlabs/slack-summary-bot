@@ -70,7 +70,9 @@ export class SlackEventsController {
             // Generate response using OpenAI
             const response = await this.openaiService.generateResponse(
               content,
-              urlInfo.url
+              urlInfo.url,
+              urlInfo.contextBefore,
+              urlInfo.contextAfter
             );
 
             // Format and post the response

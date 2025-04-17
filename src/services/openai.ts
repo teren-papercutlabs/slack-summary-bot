@@ -72,23 +72,44 @@ export class OpenAIService {
   /**
    * Generates a response using GPT-4 for Slack output
    * @param content The article content to analyze
+   * @param url The URL of the article
+   * @param contextBefore Text before the URL in the user's message
+   * @param contextAfter Text after the URL in the user's message
    * @returns The formatted response text
    */
-  public async generateResponse(content: string, url: string): Promise<string> {
+  public async generateResponse(
+    content: string,
+    url: string,
+    contextBefore?: string,
+    contextAfter?: string
+  ): Promise<string> {
     try {
       Logger.info({
         message: "Generating GPT response",
         contentLength: content.length,
+        hasContext: !!(contextBefore || contextAfter),
         functionName: "OpenAIService.generateResponse",
       });
 
-      const prompt = `Analyze this article and provide a summary in Slack markdown format:
+      // Construct user context section if provided
+      const userContext =
+        contextBefore || contextAfter
+          ? `User's Context:
+${contextBefore ? `Text before URL: "${contextBefore}"` : ""}
+${contextAfter ? `Text after URL: "${contextAfter}"` : ""}
+
+Note: The user's message context above may contain specific instructions or areas of focus for the summary. If present, ensure your summary addresses these points while maintaining the overall format.
+
+`
+          : "";
+
+      const prompt = `${userContext}Analyze this article and provide a summary in Slack markdown format:
 
 1. Format rules:
    - Use Slack markdown (*bold*, _italic_)
    - The title of the article should also be a link to the article.
    - Only use *bold* for the article title and key point headings (e.g. *Key points* and each numbered bullet title).
-   - Don’t start points with “This article…”
+   - Don't start points with "This article..."
 
 2. Summary guidelines:
    - Audience: Technical readers at a small startup (engineers, AI leads, and CTOs) building AI-powered products or using AI in their dev workflows.
@@ -101,7 +122,7 @@ export class OpenAIService {
 3. End with a *Practical application:* section.
    - Be opinionated. Evaluate which aspects are genuinely useful or replicable for a small team — and which are overkill.
    - Suggest concrete adaptations for smaller teams with limited time and tooling.
-   - If something is clever, call it out. If it’s over-engineered, say so.
+   - If something is clever, call it out. If it's over-engineered, say so.
    - Where possible, suggest a simpler or leaner implementation of the same core ideas.
 
 4. FOLLOW THIS EXACT FORMAT – NO DEVIATIONS:
@@ -136,7 +157,7 @@ export class OpenAIService {
 *Practical application:* Consider using LLMs in your dev work. It might help you move faster.
 
 👎 Why this is bad:
-- Vague summaries (“used LLMs” — how?)
+- Vague summaries ("used LLMs" — how?)
 - No mention of pipeline structure, retries, token limits, success rates
 - Practical application is empty calories: no opinion, no adaptation advice
 
@@ -156,9 +177,9 @@ export class OpenAIService {
 
 3. *Scaling context to 100K tokens for tricky files.* For tests with custom setups or cross-file dependencies, prompts were expanded to include related test files, domain-specific migration rules, and working examples. This helped the LLM infer architectural patterns and avoid breaking intended test behavior.
 
-4. Iterative tuning loop: sample, tune, sweep. Airbnb analyzed a sample of failed migrations to identify common error patterns (“sample”), adjusted prompts and scripts to address those issues (“tune”), and then reprocessed the full set with the improvements (“sweep”). This loop helped raise the automation success rate from 75% to 97%, systematically knocking out edge cases and long-tail failures.
+4. Iterative tuning loop: sample, tune, sweep. Airbnb analyzed a sample of failed migrations to identify common error patterns ("sample"), adjusted prompts and scripts to address those issues ("tune"), and then reprocessed the full set with the improvements ("sweep"). This loop helped raise the automation success rate from 75% to 97%, systematically knocking out edge cases and long-tail failures.
 
-*Practical application:* If you're migrating 100+ test files, a retryable step-based pipeline is worth replicating — even without LLMs. For smaller teams, start with 2–3 validation steps and basic retries using OpenAI functions or bash scripts. Skip the 100K token prompts unless you're seeing complex failure modes; instead, focus on tight few-shot examples and codebase-specific heuristics. Don’t over-engineer — aim for fast feedback loops and rerunability.
+*Practical application:* If you're migrating 100+ test files, a retryable step-based pipeline is worth replicating — even without LLMs. For smaller teams, start with 2–3 validation steps and basic retries using OpenAI functions or bash scripts. Skip the 100K token prompts unless you're seeing complex failure modes; instead, focus on tight few-shot examples and codebase-specific heuristics. Don't over-engineer — aim for fast feedback loops and rerunability.
 
 ---
 
@@ -177,7 +198,7 @@ ${url}
           {
             role: "system",
             content:
-              "You are a precise, insightful, and experienced software developer summarizing a technical article for a small dev team building AI products. Your audience includes junior developers and CTOs. Your job is to distill high-signal insights, focusing on implementation details, clever techniques, and patterns worth learning from. Be concise, but don’t shy away from nuance or explaining technical concepts. Use Slack markdown. Point out where the article is especially helpful—or where it overreaches.",
+              "You are a precise, insightful, and experienced software developer summarizing a technical article for a small dev team building AI products. Your audience includes junior developers and CTOs. Your job is to distill high-signal insights, focusing on implementation details, clever techniques, and patterns worth learning from. Be concise, but don't shy away from nuance or explaining technical concepts. Use Slack markdown. Point out where the article is especially helpful—or where it overreaches.",
           },
           {
             role: "user",

@@ -1,0 +1,68 @@
+
+START SPECIFICATION:
+---
+description: Use when documenting high-level business logic organization for Slack-based article summarization systems that integrate with OpenAI, focusing on article fetching, message parsing, and event handling components
+globs: src/services/*.ts,src/controllers/*.ts,src/types/*.ts
+alwaysApply: false
+---
+
+
+# main-overview
+
+## Development Guidelines
+
+- Only modify code directly relevant to the specific request. Avoid changing unrelated functionality.
+- Never replace code with placeholders like `# ... rest of the processing ...`. Always include complete code.
+- Break problems into smaller steps. Think through each step separately before implementing.
+- Always provide a complete PLAN with REASONING based on evidence from code and logs before making changes.
+- Explain your OBSERVATIONS clearly, then provide REASONING to identify the exact issue. Add console logs when needed to gather more information.
+
+
+## Core Business Components
+
+### Article Processing (Importance: 95)
+- Custom paywall detection algorithm checks HTML content for paywall indicators
+- Specialized content extraction removes non-essential elements while preserving article context
+- Custom error handling with specific codes for paywall and fetch scenarios
+File: `src/services/articleFetcher.ts`
+
+### Message Intelligence (Importance: 90)
+- Domain-specific URL extraction system handles both plain and formatted Slack URLs
+- Context preservation captures relevant text surrounding URLs
+- Custom error classification for URL-related scenarios
+File: `src/services/messageParser.ts`
+
+### AI Integration Layer (Importance: 85)
+- Technical audience-focused prompt construction for GPT-4
+- Custom formatting guidelines for technical content summarization
+- Specialized validation for API responses
+File: `src/services/openai.ts`
+
+### Event Orchestration (Importance: 80)
+- Slack event processing focused on app mentions
+- Multi-stage pipeline: URL extraction → article fetching → AI summarization
+- User-friendly error messaging based on failure scenarios
+File: `src/controllers/slackEvents.ts`
+
+## Domain Models
+
+### Message Structure (Importance: 75)
+- Specialized data model for parsed Slack messages
+- URL context preservation
+- Thread and channel relationship tracking
+File: `src/types/messageParser.ts`
+
+### Event Types (Importance: 70)
+- Custom event definitions for Slack interactions
+- Unified event type system for app mentions and verifications
+File: `src/types/slack.ts`
+
+## Business Flow
+1. Slack events trigger the system through mentions
+2. Messages are parsed to extract URLs and context
+3. Articles are fetched with paywall detection
+4. Content is processed and summarized via OpenAI
+5. Formatted responses are posted back to relevant Slack threads
+
+$END$
+END SPECIFICATION

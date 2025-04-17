@@ -1,0 +1,18 @@
+[
+  {
+    "fileName": "main-overview.mdc",
+    "description": "Complete system overview documenting the core architecture, component interactions, and high-level flow from Slack message receipt through article processing to summary generation"
+  },
+  {
+    "fileName": "message-processing-flow.mdc",
+    "description": "Detailed documentation of the message processing pipeline, including URL extraction algorithms, context capture logic, and error handling across the messageParser and slackEvents components"
+  },
+  {
+    "fileName": "article-processing-algorithms.mdc",
+    "description": "Technical documentation of article fetching and processing algorithms, including paywall detection logic, content extraction methods, and HTML processing implementations"
+  },
+  {
+    "fileName": "openai-integration.mdc",
+    "description": "Detailed documentation of the OpenAI service implementation, including prompt construction algorithms, response handling, and integration with the article processing pipeline"
+  }
+]
