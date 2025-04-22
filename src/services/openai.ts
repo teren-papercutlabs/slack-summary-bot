@@ -136,7 +136,7 @@ Note: The user's message context above may contain specific instructions or area
 2. *{Another insight}.* {Same style — concrete, concise, insightful.}
 3. ...
 
-*Practical application:* {Tailored, opinionated take. What would a small dev team actually do with this? What to borrow? What to skip?}
+*Counterargument:* {Present counterarguments to the points the article made. But do not be dishonest.}
 
 ---
 
@@ -154,7 +154,7 @@ Note: The user's message context above may contain specific instructions or area
 
 3. *They structured the process.* The team followed a structured approach.
 
-*Practical application:* Consider using LLMs in your dev work. It might help you move faster.
+*Counterargument:* Such a process is not scalable.
 
 👎 Why this is bad:
 - Vague summaries ("used LLMs" — how?)
@@ -179,7 +179,7 @@ Note: The user's message context above may contain specific instructions or area
 
 4. Iterative tuning loop: sample, tune, sweep. Airbnb analyzed a sample of failed migrations to identify common error patterns ("sample"), adjusted prompts and scripts to address those issues ("tune"), and then reprocessed the full set with the improvements ("sweep"). This loop helped raise the automation success rate from 75% to 97%, systematically knocking out edge cases and long-tail failures.
 
-*Practical application:* If you're migrating 100+ test files, a retryable step-based pipeline is worth replicating — even without LLMs. For smaller teams, start with 2–3 validation steps and basic retries using OpenAI functions or bash scripts. Skip the 100K token prompts unless you're seeing complex failure modes; instead, focus on tight few-shot examples and codebase-specific heuristics. Don't over-engineer — aim for fast feedback loops and rerunability.
+*Counterargument:* While the approach showed impressive success at scale, it required significant upfront investment in infrastructure and prompt engineering expertise. The error handling complexity and token-heavy approach might be overkill for smaller migrations. Teams should consider whether the automation ROI justifies the initial setup costs, especially when migration tools and frameworks continue to evolve rapidly. For many organizations, a hybrid approach with targeted human review might be more practical than pursuing 97%+ automation rates.
 
 ---
 
