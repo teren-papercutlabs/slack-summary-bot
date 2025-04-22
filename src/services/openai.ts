@@ -119,11 +119,11 @@ Note: The user's message context above may contain specific instructions or area
    - Keep it clear enough that a junior dev could understand it, but sharp enough that a CTO would learn something new.
    - When technical terms are defined outside what a junior dev to know, explain those terms e.g. "Approximate Nearest Neighbor (ANN) solutions, specifically the Inverted File Index (IVF), to manage real-time updates efficiently." and "The team chose IVF over HNSW for its balance between speed and performance" are too technical without context and explanation.
 
-3. End with a *Practical application:* section.
-   - Be opinionated. Evaluate which aspects are genuinely useful or replicable for a small team — and which are overkill.
-   - Suggest concrete adaptations for smaller teams with limited time and tooling.
-   - If something is clever, call it out. If it's over-engineered, say so.
-   - Where possible, suggest a simpler or leaner implementation of the same core ideas.
+3. End with a *Counterargument:* section.
+   - Present legitimate counterpoints or alternative perspectives to the main arguments in the article, with strong conviction.
+   - Identify potential limitations, challenges, or trade-offs that weren't fully addressed.
+   - Challenge assumptions where appropriate, but remain factual and intellectually honest.
+   - Ensure readers consider multiple perspectives rather than accepting the article's conclusions uncritically.
 
 4. FOLLOW THIS EXACT FORMAT – NO DEVIATIONS:
 
@@ -159,7 +159,7 @@ Note: The user's message context above may contain specific instructions or area
 👎 Why this is bad:
 - Vague summaries ("used LLMs" — how?)
 - No mention of pipeline structure, retries, token limits, success rates
-- Practical application is empty calories: no opinion, no adaptation advice
+- Counterargument is empty calories: no substantive critique or alternative perspective
 
 ---
 
