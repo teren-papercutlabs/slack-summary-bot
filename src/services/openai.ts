@@ -192,6 +192,12 @@ Article URL (only to be used for the article title link):
 ${url}
 `;
 
+      Logger.info({
+        message: "Prompt",
+        prompt,
+        functionName: "OpenAIService.generateResponse",
+      });
+
       const response = await this.client.chat.completions.create({
         model: "gpt-4o", // 4o is intended, do not fix this
         messages: [
